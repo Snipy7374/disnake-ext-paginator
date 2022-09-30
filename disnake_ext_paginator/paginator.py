@@ -1,7 +1,4 @@
 from __future__ import annotations
-
-from typing import List, Union, Optional
-
 import disnake
 
 
@@ -38,22 +35,22 @@ class Paginator(disnake.ui.View):
     def __init__(
         self,
         *,
-        timeout: Union[int, float] = 10,
-        previous_button: disnake.ui.Button = disnake.ui.Button(
+        timeout: int | float = 10,
+        previous_button: disnake.ui.Button["Paginator"] = disnake.ui.Button(
             emoji=disnake.PartialEmoji(name="\U000025c0")
             ),
-        next_button: disnake.ui.Button = disnake.ui.Button(
+        next_button: disnake.ui.Button["Paginator"] = disnake.ui.Button(
             emoji=disnake.PartialEmoji(name="\U000025b6")
             ),
-        trash_button: disnake.ui.Button = disnake.ui.Button(
+        trash_button: disnake.ui.Button["Paginator"] = disnake.ui.Button(
             emoji=disnake.PartialEmoji(name="\U0001f5d1"),
             style=disnake.ButtonStyle.danger,
         ),
         page_counter_style: disnake.ButtonStyle = disnake.ButtonStyle.grey,
         initial_page: int = 0,
-        on_timeout_message: Optional[str] = None,
+        on_timeout_message: str | None  = None,
         interaction_check: bool = True,
-        interaction_check_message: Union[disnake.Embed, str] = disnake.Embed(
+        interaction_check_message: disnake.Embed | str = disnake.Embed(
             description="You cannot control this pagination because you did not execute it.",
             color=disnake.Color.red()
         ),
@@ -78,7 +75,7 @@ class Paginator(disnake.ui.View):
     async def start(
         self,
         interaction: disnake.ApplicationCommandInteraction,
-        pages: List[disnake.Embed]
+        pages: list[disnake.Embed]
     ) -> None:
 
         self.pages = pages
@@ -90,11 +87,11 @@ class Paginator(disnake.ui.View):
 
         self.next_button.disabled, self.previous_button.disabled, self.trash_button.disabled = False, False, False
 
-        self.previous_button.callback = self.previous_button_callback
-        self.next_button.callback = self.next_button_callback
-        self.trash_button.callback = self.trash_button_callback
+        self.previous_button.callback = self.__previous_button_callback
+        self.next_button.callback = self.__next_button_callback
+        self.trash_button.callback = self.__trash_button_callback
 
-        self.page_counter = disnake.ui.Button(
+        self.page_counter: disnake.ui.Button["Paginator"] = disnake.ui.Button(
             label=f"{self.initial_page + 1}/{self.total_page_count}",
             style=self.page_counter_style,
             disabled=True
@@ -117,7 +114,7 @@ class Paginator(disnake.ui.View):
                 )
             await self.interaction.edit_original_message(embed=embed, view=self)
     
-    async def interaction_check(self, interaction: disnake.MessageInteraction) -> None:
+    async def interaction_check(self, interaction: disnake.MessageInteraction) -> bool:
         if isinstance(self._interaction_check, bool) and self._interaction_check:
             if interaction.author.id != self.interaction.author.id:
                 if isinstance(self.interaction_check_message, disnake.Embed):
@@ -129,7 +126,7 @@ class Paginator(disnake.ui.View):
         else:
             return True
 
-    async def previous(self):
+    async def __previous(self) -> None:
         if self.current_page == 0:
             self.current_page = self.total_page_count - 1
         else:
@@ -138,7 +135,7 @@ class Paginator(disnake.ui.View):
         self.page_counter.label = f"{self.current_page + 1}/{self.total_page_count}"
         await self.interaction.edit_original_message(embed=self.pages[self.current_page], view=self)
 
-    async def next(self):
+    async def __next(self) -> None:
         if self.current_page == self.total_page_count - 1:
             self.current_page = 0
         else:
@@ -147,14 +144,14 @@ class Paginator(disnake.ui.View):
         self.page_counter.label = f"{self.current_page + 1}/{self.total_page_count}"
         await self.interaction.edit_original_message(embed=self.pages[self.current_page], view=self)
 
-    async def next_button_callback(self, interaction: disnake.MessageInteraction):
-        await self.next()
+    async def __next_button_callback(self, interaction: disnake.MessageInteraction) -> None:
+        await self.__next()
         await interaction.response.defer()
 
-    async def previous_button_callback(self, interaction: disnake.MessageInteraction):
-        await self.previous()
+    async def __previous_button_callback(self, interaction: disnake.MessageInteraction) -> None:
+        await self.__previous()
         await interaction.response.defer()
     
-    async def trash_button_callback(self, interaction: disnake.MessageInteraction):
+    async def __trash_button_callback(self, interaction: disnake.MessageInteraction) -> None:
         self.original_message_deleted = True
         await self.interaction.delete_original_message()
