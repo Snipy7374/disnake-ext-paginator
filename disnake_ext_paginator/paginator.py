@@ -46,6 +46,7 @@ class Paginator(disnake.ui.View):
             emoji=disnake.PartialEmoji(name="\U0001f5d1"),
             style=disnake.ButtonStyle.danger,
         ),
+        page_counter_separator: str = "/",
         page_counter_style: disnake.ButtonStyle = disnake.ButtonStyle.grey,
         initial_page: int = 0,
         on_timeout_message: str | None  = None,
@@ -60,6 +61,7 @@ class Paginator(disnake.ui.View):
         self.previous_button = previous_button
         self.next_button = next_button
         self.trash_button = trash_button
+        self.page_counter_separator = page_counter_separator
         self.page_counter_style = page_counter_style
         self.initial_page = initial_page
 
@@ -92,7 +94,7 @@ class Paginator(disnake.ui.View):
         self.trash_button.callback = self.__trash_button_callback
 
         self.page_counter: disnake.ui.Button["Paginator"] = disnake.ui.Button(
-            label=f"{self.initial_page + 1}/{self.total_page_count}",
+            label=f"{self.initial_page + 1} {self.page_counter_separator} {self.total_page_count}",
             style=self.page_counter_style,
             disabled=True
         )
@@ -132,7 +134,7 @@ class Paginator(disnake.ui.View):
         else:
             self.current_page -= 1
 
-        self.page_counter.label = f"{self.current_page + 1}/{self.total_page_count}"
+        self.page_counter.label = f"{self.current_page + 1} {self.page_counter_separator} {self.total_page_count}"
         await self.interaction.edit_original_message(embed=self.pages[self.current_page], view=self)
 
     async def __next(self) -> None:
@@ -141,7 +143,7 @@ class Paginator(disnake.ui.View):
         else:
             self.current_page += 1
 
-        self.page_counter.label = f"{self.current_page + 1}/{self.total_page_count}"
+        self.page_counter.label = f"{self.current_page + 1} {self.page_counter_separator} {self.total_page_count}"
         await self.interaction.edit_original_message(embed=self.pages[self.current_page], view=self)
 
     async def __next_button_callback(self, interaction: disnake.MessageInteraction) -> None:
