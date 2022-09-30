@@ -35,7 +35,7 @@ class Paginator(disnake.ui.View):
     def __init__(
         self,
         *,
-        timeout: int | float = 10,
+        timeout: int | float = 60,
         previous_button: disnake.ui.Button["Paginator"] = disnake.ui.Button(
             emoji=disnake.PartialEmoji(name="\U000025c0")
             ),
