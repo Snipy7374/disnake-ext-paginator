@@ -2,6 +2,12 @@
 
 #### **disnake-ext-paginator** is a Python library to easily create embed paginators.
 
+## Supported Version
+
+Python version >= 3.8
+Disnake version >= 2.4.0 (it's really reccomended to use 2.6.0)
+
+-----
 ## Installation
 
 Using git
