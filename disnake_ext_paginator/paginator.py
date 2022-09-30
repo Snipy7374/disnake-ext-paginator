@@ -124,7 +124,7 @@ class Paginator(disnake.ui.View):
                 return False
             return True
         else:
-            return True
+            return False
 
     async def __previous(self) -> None:
         if self.current_page == 0:
