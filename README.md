@@ -7,8 +7,6 @@
 Python version >= 3.8
 
 Disnake version >= 2.4.0 (it's really reccomended to use 2.6.0)
-
------
 ## Installation
 
 Using git
@@ -84,6 +82,7 @@ async def test_command(inter: disnake.ApplicationCommandInteraction) -> None:
         previous_button=disnake.ui.Button(...),
         next_button=disnake.ui.Button(...),
         trash_button=disnake.ui.Button(...),
+        page_counter_separator="-",
         page_counter_style=disnake.ButtonStyle.danger,
         initial_page=1,
         on_timeout_message="Paginator expired",
@@ -102,6 +101,7 @@ class disnake_ext_paginator.Paginator(
     previous_button: disnake.ui.Button = disnake.ui.Button(...),
     next_button: disnake.ui.Button = disnake.ui.Button(...),
     trash_button: disnake.ui.Button = disnake.ui.Button(...),
+    page_counter_separator: str = "/",
     page_counter_style: disnake.ButtonStyle = disnake.ButtonStyle.grey,
     initial_page: int = 0,
     on_timeout_message: Optional[str] = None,
@@ -128,6 +128,9 @@ class disnake_ext_paginator.Paginator(
 **trash_button: `disnake.ui.Button`**
 - Overrides default trash Button.
 
+**page_counter_separator: `str`**
+
+- The separator between page numbers.
 
 **page_counter_style: `disnake.ButtonStyle`**
 - Overrides default page counter style.
