@@ -1,6 +1,9 @@
 from __future__ import annotations
 import disnake
 
+__all__ = (
+    "Paginator",
+)
 
 class Paginator(disnake.ui.View):
     """
@@ -16,6 +19,9 @@ class Paginator(disnake.ui.View):
         Overrides default next button.
     trash_button: disnake.ui.Button.
         Overrides default trash Button.
+    page_counter_separator: str
+        The custom separator between the pages numbers
+        in the page_counter button.
     page_counter_style: disnake.ButtonStyle
         Overrides default page counter style.
     initial_page: int
@@ -30,7 +36,31 @@ class Paginator(disnake.ui.View):
         The message to send when an `interaction_check` fails e.g a user
         who is not the command owner attempeted to interact with the paginator.
         This feature can be disabled setting `interaction_check` to `False`.
+    ephemeral: bool
+        Whether the paginator should only be visible to the command invokator or
+        to anyone else.
     """
+
+    __slots__ = (
+        "timeout",
+        "previous_button",
+        "next_button",
+        "trash_button",
+        "page_counter_separator",
+        "page_counter_style",
+        "initial_page",
+        "on_timeout_message",
+        "interaction_check_message",
+        "ephemeral",
+        "_interaction_check",
+        "pages",
+        "total_page_count",
+        "interaction",
+        "bot",
+        "current_page",
+        "original_message_deleted",
+        "page_counter",
+    )
 
     def __init__(
         self,
@@ -157,3 +187,4 @@ class Paginator(disnake.ui.View):
     async def __trash_button_callback(self, interaction: disnake.MessageInteraction) -> None:
         self.original_message_deleted = True
         await self.interaction.delete_original_message()
+
