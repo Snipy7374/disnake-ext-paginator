@@ -1,7 +1,7 @@
 # disnake-ext-paginator
 
 #### **disnake-ext-paginator** is a Python library to easily create embed paginators.
-
+---
 ## Supported Versions
 
 Required dependencies [requirements.txt](https://github.com/Snipy7374/disnake-ext-paginator/blob/main/requirements.txt)
@@ -10,14 +10,26 @@ python >=3.8, <= 3.10
 disnake >= 2.4.0    #(it's really recommended to use 2.6.0)
 ```
 
+To install the required dependencies you can run:
+
+- with bash
+```
+pip install -r requirements.txt
+```
+
+- with poetry
+```
+poetry install
+```
+---
 ## Installation
 
-Using git
+- Using git
 ```
 git clone https://github.com/Snipy7374/disnake-ext-paginator
 ```
 
-
+---
 ## Usage
 
 ### Quickstart
