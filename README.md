@@ -186,6 +186,11 @@ def disnake_ext_paginator.Paginator.start(
 **pages: `list[disnake.Embed]`**
 
 - A list of `disnake.Embed` objects.
+
+### **raises RuntimeError**:
+- If the user is attempting to starts two paginators in the same command function body or if the user is attempting to use the same Paginator object to start a paginator twice.
+
+
 -----
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
