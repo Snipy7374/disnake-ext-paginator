@@ -1,11 +1,13 @@
 from setuptools import setup
 
+
 def read_requirements(path):
     with open(path, "r", encoding="utf-8") as f:
         return [i.strip() for i in f.read().splitlines() if i]
 
+
 requirements = read_requirements("./requirements.txt")
-version = "0.0.4"
+version = "0.0.5"
 
 readme = ""
 with open("README.md", encoding="utf-8") as f:
