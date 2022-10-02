@@ -12,7 +12,7 @@ disnake >= 2.4.0    #(it's really recommended to use 2.6.0)
 
 To install the required dependencies you can run:
 
-- with bash
+- with pip
 ```
 pip install -r requirements.txt
 ```
