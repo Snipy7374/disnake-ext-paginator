@@ -40,6 +40,8 @@ class Paginator(disnake.ui.View):
         to anyone else.
     """
 
+    __all_instances = []
+
     __slots__ = (
         "timeout",
         "previous_button",
@@ -80,13 +82,15 @@ class Paginator(disnake.ui.View):
         initial_page: int = 0,
         on_timeout_message: str | None = None,
         interaction_check: bool = True,
-        interaction_check_message: disnake.Embed | str = disnake.Embed(
+        interaction_check_message: disnake.Embed
+        | str = disnake.Embed(
             description="You cannot control this pagination because you did not execute it.",
             color=disnake.Color.red(),
         ),
         ephemeral: bool = False,
     ) -> None:
 
+        self._instances_location = []
         self.previous_button = previous_button
         self.next_button = next_button
         self.trash_button = trash_button
@@ -107,6 +111,41 @@ class Paginator(disnake.ui.View):
         interaction: disnake.ApplicationCommandInteraction,
         pages: list[disnake.Embed],
     ) -> None:
+        """
+        Starts the Paginator object.
+
+        Parameters:
+        ----------
+        interaction: disnake.ApplicationCommandInteraction
+            The command interaction.
+        pages: List[disnake.Embed]
+            A list of embeds wich compose the Paginator contents to send.
+
+        Raises:
+        ----------
+        RuntimeError:
+            If the user is attempting to starts two paginators in the same command function body
+            or if the user is attempting to use the same Paginator object to start a paginator twice.
+
+        """
+
+        # Checks if a user is trying to use a Paginator instance
+        # in the same command function and raise a RuntimeError
+        # this is needed because in the same command the interaction
+        # is the same so the Paginator can't work correctly with two instances.
+        # Note: This error is not raised on __init__ method so you can create two Paginator instances
+        # but you can't start the Paginator with the start method.
+        # .. warning: This error is also raised when attempting to use the same Paginator object
+        # twice in the same command body function.
+        self._current_instance_location = f"{interaction.application_command.cog}.{interaction.application_command.name}"
+        Paginator.__all_instances.append(self._current_instance_location)
+        if any(
+            Paginator.__all_instances.count(instance_location) > 1
+            for instance_location in Paginator.__all_instances
+        ):
+            raise RuntimeError(
+                f"You can have only one Paginator instance per command! Check your '{self._current_instance_location}' command."
+            )
 
         self.pages = pages
         self.total_page_count = len(pages)
