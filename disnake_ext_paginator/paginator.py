@@ -82,15 +82,13 @@ class Paginator(disnake.ui.View):
         initial_page: int = 0,
         on_timeout_message: str | None = None,
         interaction_check: bool = True,
-        interaction_check_message: disnake.Embed
-        | str = disnake.Embed(
+        interaction_check_message: disnake.Embed | str = disnake.Embed(
             description="You cannot control this pagination because you did not execute it.",
             color=disnake.Color.red(),
         ),
         ephemeral: bool = False,
     ) -> None:
 
-        self._instances_location = []
         self.previous_button = previous_button
         self.next_button = next_button
         self.trash_button = trash_button
