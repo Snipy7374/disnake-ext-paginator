@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import disnake
 
 __all__ = ("Paginator",)
@@ -41,7 +40,7 @@ class Paginator(disnake.ui.View):
         to anyone else.
     """
 
-    __running_interaction_ids: list[int] = []
+    __all_instances = []
 
     __slots__ = (
         "timeout",
@@ -65,29 +64,29 @@ class Paginator(disnake.ui.View):
     )
 
     def __init__(
-            self,
-            *,
-            timeout: int | float = 60,
-            previous_button: disnake.ui.Button["Paginator"] = disnake.ui.Button(
-                emoji=disnake.PartialEmoji(name="\U000025c0")
-            ),
-            next_button: disnake.ui.Button["Paginator"] = disnake.ui.Button(
-                emoji=disnake.PartialEmoji(name="\U000025b6")
-            ),
-            trash_button: disnake.ui.Button["Paginator"] = disnake.ui.Button(
-                emoji=disnake.PartialEmoji(name="\U0001f5d1"),
-                style=disnake.ButtonStyle.danger,
-            ),
-            page_counter_separator: str = "/",
-            page_counter_style: disnake.ButtonStyle = disnake.ButtonStyle.grey,
-            initial_page: int = 0,
-            on_timeout_message: str | None = None,
-            interaction_check: bool = True,
-            interaction_check_message: disnake.Embed | str = disnake.Embed(
-                description="You cannot control this pagination because you did not execute it.",
-                color=disnake.Color.red(),
-            ),
-            ephemeral: bool = False,
+        self,
+        *,
+        timeout: int | float = 60,
+        previous_button: disnake.ui.Button["Paginator"] = disnake.ui.Button(
+            emoji=disnake.PartialEmoji(name="\U000025c0")
+        ),
+        next_button: disnake.ui.Button["Paginator"] = disnake.ui.Button(
+            emoji=disnake.PartialEmoji(name="\U000025b6")
+        ),
+        trash_button: disnake.ui.Button["Paginator"] = disnake.ui.Button(
+            emoji=disnake.PartialEmoji(name="\U0001f5d1"),
+            style=disnake.ButtonStyle.danger,
+        ),
+        page_counter_separator: str = "/",
+        page_counter_style: disnake.ButtonStyle = disnake.ButtonStyle.grey,
+        initial_page: int = 0,
+        on_timeout_message: str | None = None,
+        interaction_check: bool = True,
+        interaction_check_message: disnake.Embed | str = disnake.Embed(
+            description="You cannot control this pagination because you did not execute it.",
+            color=disnake.Color.red(),
+        ),
+        ephemeral: bool = False,
     ) -> None:
 
         self.previous_button = previous_button
@@ -106,9 +105,9 @@ class Paginator(disnake.ui.View):
         super().__init__(timeout=timeout)
 
     async def start(
-            self,
-            interaction: disnake.ApplicationCommandInteraction,
-            pages: list[disnake.Embed],
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        pages: list[disnake.Embed],
     ) -> None:
         """
         Starts the Paginator object.
@@ -136,15 +135,15 @@ class Paginator(disnake.ui.View):
         # but you can't start the Paginator with the start method.
         # .. warning: This error is also raised when attempting to use the same Paginator object
         # twice in the same command body function.
-
         self._current_instance_location = f"{interaction.application_command.cog}.{interaction.application_command.name}"
-
-        if interaction.id in Paginator.__running_interaction_ids:
+        Paginator.__all_instances.append(self._current_instance_location)
+        if any(
+            Paginator.__all_instances.count(instance_location) > 1
+            for instance_location in Paginator.__all_instances
+        ):
             raise RuntimeError(
                 f"You can have only one Paginator instance per command! Check your '{self._current_instance_location}' command."
             )
-
-        Paginator.__running_interaction_ids.append(interaction.id)
 
         self.pages = pages
         self.total_page_count = len(pages)
@@ -190,8 +189,6 @@ class Paginator(disnake.ui.View):
                 embed.set_footer(text=self.on_timeout_message)
             await self.interaction.edit_original_message(embed=embed, view=self)
 
-        Paginator.__running_interaction_ids.remove(self.interaction.id)
-
     async def interaction_check(self, interaction: disnake.MessageInteraction) -> bool:
         if isinstance(self._interaction_check, bool) and self._interaction_check:
             if interaction.author.id != self.interaction.author.id:
@@ -231,19 +228,19 @@ class Paginator(disnake.ui.View):
         )
 
     async def __next_button_callback(
-            self, interaction: disnake.MessageInteraction
+        self, interaction: disnake.MessageInteraction
     ) -> None:
         await self.__next()
         await interaction.response.defer()
 
     async def __previous_button_callback(
-            self, interaction: disnake.MessageInteraction
+        self, interaction: disnake.MessageInteraction
     ) -> None:
         await self.__previous()
         await interaction.response.defer()
 
     async def __trash_button_callback(
-            self, interaction: disnake.MessageInteraction
+        self, interaction: disnake.MessageInteraction
     ) -> None:
         self.original_message_deleted = True
         await self.interaction.delete_original_message()
