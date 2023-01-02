@@ -40,7 +40,7 @@ class Paginator(disnake.ui.View):
         to anyone else.
     """
 
-    __all_instances = []
+    __running_interaction_ids: list[int] = []
 
     __slots__ = (
         "timeout",
@@ -135,15 +135,15 @@ class Paginator(disnake.ui.View):
         # but you can't start the Paginator with the start method.
         # .. warning: This error is also raised when attempting to use the same Paginator object
         # twice in the same command body function.
+
         self._current_instance_location = f"{interaction.application_command.cog}.{interaction.application_command.name}"
-        Paginator.__all_instances.append(self._current_instance_location)
-        if any(
-            Paginator.__all_instances.count(instance_location) > 1
-            for instance_location in Paginator.__all_instances
-        ):
+
+        if interaction.id in Paginator.__running_interaction_ids:
             raise RuntimeError(
                 f"You can have only one Paginator instance per command! Check your '{self._current_instance_location}' command."
             )
+
+        Paginator.__running_interaction_ids.append(interaction.id)
 
         self.pages = pages
         self.total_page_count = len(pages)
@@ -188,6 +188,8 @@ class Paginator(disnake.ui.View):
             if self.on_timeout_message:
                 embed.set_footer(text=self.on_timeout_message)
             await self.interaction.edit_original_message(embed=embed, view=self)
+
+        Paginator.__running_interaction_ids.remove(self.interaction.id)
 
     async def interaction_check(self, interaction: disnake.MessageInteraction) -> bool:
         if isinstance(self._interaction_check, bool) and self._interaction_check:
