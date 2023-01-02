@@ -7,9 +7,7 @@ import inspect
 import disnake
 
 
-__all__ = (
-    "Paginator",
-)
+__all__ = ("Paginator",)
 
 
 class Paginator(disnake.ui.View):
