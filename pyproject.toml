@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "disnake-ext-paginator"
+version = "0.0.5"
+description = "A Python library to easily create embed paginators."
+authors = ["soosBot-com", "Snipy7374"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "disnake_ext_paginator"}]
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+disnake = ">=2.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
