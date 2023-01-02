@@ -113,9 +113,9 @@ bot.run('TOKEN')
 ```python
 class disnake_ext_paginator.Paginator(
     timeout: Union[int, float] = 60,
-    previous_button: disnake.ui.Button = disnake.ui.Button(...),
-    next_button: disnake.ui.Button = disnake.ui.Button(...),
-    trash_button: disnake.ui.Button = disnake.ui.Button(...),
+    previous_button: disnake.ui.Button = None,
+    next_button: disnake.ui.Button = None,
+    trash_button: disnake.ui.Button = None,
     page_counter_separator: str = "/",
     page_counter_style: disnake.ButtonStyle = disnake.ButtonStyle.grey,
     initial_page: int = 0,
@@ -133,15 +133,15 @@ class disnake_ext_paginator.Paginator(
 
 **previous_button: `disnake.ui.Button`**
     
-- Overrides default previous button.
+- Overrides default previous button. If not provided or None a default button will be used.
 
 
 **next_button: `disnake.ui.Button`**
-- Overrides default next button.
+- Overrides default next button. If not provided or None a default button will be used.
 
 
 **trash_button: `disnake.ui.Button`**
-- Overrides default trash Button.
+- Overrides default trash Button. If not provided or None a default button will be used.
 
 **page_counter_separator: `str`**
 
@@ -195,7 +195,9 @@ def disnake_ext_paginator.Paginator.start(
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Please make sure to update tests as appropriate.
+-----
+# Contacts & Support
+[Discord - Snipy#7374](https://www.discordapp.com/users/710570210159099984)
 
 -----
 ## Licenses
