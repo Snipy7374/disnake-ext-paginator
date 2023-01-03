@@ -44,6 +44,8 @@ class Paginator(disnake.ui.View):
     ephemeral: bool
         Whether the paginator should only be visible to the command invokator or
         to anyone else.
+    persistent: bool
+    
     """
 
     __running_interaction_ids: list[int] = []
@@ -207,6 +209,9 @@ class Paginator(disnake.ui.View):
         await interaction.send(
             embed=self.pages[self.initial_page], view=self, ephemeral=self.ephemeral
         )
+
+        if self.persistent:
+            self.bot.add_view(self)
 
     async def on_timeout(self) -> None:
         if not self.original_message_deleted:
